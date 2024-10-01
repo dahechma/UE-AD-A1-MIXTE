@@ -1,0 +1,31 @@
+type Query {
+    users: [User]
+    userById(id: String!): User
+    movies: [Movie]
+    bookings(userId: String!): Booking
+    moviesInfo(userId: String!): [Movie]
+}
+
+type User {
+    id: String!
+    name: String!
+    age: Int!
+    email: String!
+}
+
+type Movie {
+    id: String!
+    title: String!
+    director: String!
+    rating: Float!
+}
+
+type Booking {
+    userId: String!
+    dates: [Date]
+}
+
+type Date {
+    date: String!
+    movies: [String]
+}
