@@ -7,7 +7,7 @@ app = Flask(__name__)
 PORT = 3200
 HOST = '0.0.0.0'
 
-type_defs = load_schema_from_path('movies.graphql')
+type_defs = load_schema_from_path('movie.graphql')
 query = QueryType()
 mutation = ObjectType('Mutation')
 movie = ObjectType('Movie')

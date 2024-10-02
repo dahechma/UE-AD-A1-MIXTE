@@ -1,7 +1,7 @@
 import json
 
             
-with open('databases/movies.json', 'r') as f:
+with open('data/movies.json', 'r') as f:
     movies = json.load(f)["movies"]
 
 def all_movies(_, info):
