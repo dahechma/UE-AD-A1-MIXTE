@@ -28,11 +28,9 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
         return times
 
     def GetMoviesByDate(self, request, context):
-        #thedate = showtime_pb2.Date(date=str(request.date))
-        thedate = showtime_pb2.Date(date="20151201")
-        times=self.get_movie_by_date(thedate)
-        
-        return booking_pb2.Dates(date=times.date, movies=times.movies)
+        thedate = showtime_pb2.Date(date=str(request.date))
+        times = self.get_movie_by_date(thedate)
+        yield booking_pb2.Dates(date=times.date, movies=times.movies)
    
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
