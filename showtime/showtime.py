@@ -10,9 +10,11 @@ class showtimeServicer(showtime_pb2_grpc.showtimeServicer):
         with open('{}/data/times.json'.format("."), "r") as jsf:
             self.db = json.load(jsf)["schedule"]
     def GetTimes (self, request, context): 
+        print("GetMovie")
         for time in self.db:
             yield showtime_pb2.Schedule(date=time['date'], movies=time['movies'])
     def GetMoviebyDate(self, request, context):
+        print("GetMovie")
         for time in self.db:
             if time['date'] == request.date:
                 return showtime_pb2.Schedule(date=time['date'], movies=time['movies'])

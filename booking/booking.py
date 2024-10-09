@@ -12,8 +12,8 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
         with open('{}/data/bookings.json'.format("."), "r") as jsf:
             self.db = json.load(jsf)["bookings"]
         #stub
-        with grpc.insecure_channel('localhost:3002') as channel:
-            self.stub = showtime_pb2_grpc.showtimeStub(channel)
+        channel = grpc.insecure_channel('localhost:3002')
+        self.stub = showtime_pb2_grpc.showtimeStub(channel)
     def GetBookings (self, request, context):
         for booking in self.db:
             yield booking_pb2.Bookings(userid=booking['userid'], dates=booking['dates'])
@@ -22,16 +22,17 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
             if booking['userid'] == request.userid:
                 return booking_pb2.Bookings(userid=booking['userid'], dates=booking['dates'])
         return booking_pb2.Bookings(userid="Not Found", dates=[])
-    def get_movie_by_date(self, stub, thedate):
-        
-        x=stub.showtimeServicer.GetMoviebyDate(thedate)
-        print("test")
-        #return movies
+    def get_movie_by_date(self, thedate):
+        times = self.stub.GetMoviebyDate(thedate)
+        #times =self.stub.GetTimes(showtime_pb2.EmptySchedule())
+        return times
 
     def GetMoviesByDate(self, request, context):
-        thedate = showtime_pb2.Date(date=str(request.date))
-        self.get_movie_by_date(self.stub, thedate)
-        #return booking_pb2.Dates(date=movies.date, movies=movies.movies)
+        #thedate = showtime_pb2.Date(date=str(request.date))
+        thedate = showtime_pb2.Date(date="20151201")
+        times=self.get_movie_by_date(thedate)
+        
+        return booking_pb2.Dates(date=times.date, movies=times.movies)
    
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
