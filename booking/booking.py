@@ -23,7 +23,8 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
                 return booking_pb2.Bookings(userid=booking['userid'], dates=booking['dates'])
         return booking_pb2.Bookings(userid="Not Found", dates=[])
     def get_movie_by_date(self, stub, thedate):
-        movies = stub.GetMoviebyDate(thedate)
+        
+        x=stub.showtimeServicer.GetMoviebyDate(thedate)
         print("test")
         #return movies
 
