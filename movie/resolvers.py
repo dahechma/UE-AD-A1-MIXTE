@@ -1,8 +1,8 @@
 import json
 
             
-with open('data/movies.json', 'r') as f:
-    movies = json.load(f)["movies"]
+with open('{}/data/movies.json'.format("."), "r") as jsf:
+    movies = json.load(jsf)["movies"]
 
 def all_movies(_, info):
     return movies
