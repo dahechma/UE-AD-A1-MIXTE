@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package booking;
+
+service BookingService {
+    rpc GetBookings (Empty) returns (BookingsResponse);
+    rpc GetBookingsByUserId (UserIdRequest) returns (BookingResponse);
+    rpc GetMovieByDate (DateRequest) returns (MovieResponse);
+    rpc AddBookingByUserId (AddBookingRequest) returns (AddBookingResponse);
+}
+
+message Empty {}
+
+message UserIdRequest {
+    string userid = 1;
+}
+
+message DateRequest {
+    string date = 1;
+}
+
+message AddBookingRequest {
+    string userid = 1;
+    string date = 2;
+}
+
+message Booking {
+    string userid = 1;
+    repeated string dates = 2;
+}
+
+message BookingsResponse {
+    repeated Booking bookings = 1;
+}
+
+message BookingResponse {
+    Booking booking = 1;
+}
+
+message MovieResponse {
+    string movie = 1;
+}
+
+message AddBookingResponse {
+    string message = 1;
+}
