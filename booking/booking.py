@@ -31,6 +31,19 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
         thedate = showtime_pb2.Date(date=str(request.date))
         times = self.get_movie_by_date(thedate)
         yield booking_pb2.Dates(date=times.date, movies=times.movies)
+    def AddBookingByUserId(self, request, context):
+        for booking in self.db:
+            if str(booking["userid"]) == str(request.userid):
+                    booking["dates"].append(request.dates)
+                    self.write_bookings()
+                    return booking_pb2.BookingResponse(message="movie added")
+        context.set_code(grpc.StatusCode.NOT_FOUND)
+        context.set_details("User ID not found")
+        return booking_pb2.BookingResponse(message="error: user ID not found")
+
+    def write_bookings(self):
+        with open('{}/data/bookings.json'.format("."), 'w') as f:
+            json.dump({"bookings": self.db}, f)
    
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
