@@ -34,7 +34,7 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
     # Write bookings to JSON file
     def write_bookings(self,bookings):
         with open('{}/data/bookings.json'.format("."), 'w') as f:
-            json.dump({"bookings ":  bookings}, f)
+            json.dump({"bookings":  bookings}, f)
 
     def AddBookingByUserId(self, request, context):
         bookings = self.db
