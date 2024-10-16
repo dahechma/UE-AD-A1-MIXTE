@@ -49,9 +49,9 @@ class BookingStub(object):
                 request_serializer=booking__pb2.Date.SerializeToString,
                 response_deserializer=booking__pb2.Dates.FromString,
                 _registered_method=True)
-        self.AddBookingByUserId = channel.stream_unary(
+        self.AddBookingByUserId = channel.unary_unary(
                 '/booking.Booking/AddBookingByUserId',
-                request_serializer=booking__pb2.Bookings.SerializeToString,
+                request_serializer=booking__pb2.BookingRequest.SerializeToString,
                 response_deserializer=booking__pb2.AddBookingResponse.FromString,
                 _registered_method=True)
 
@@ -77,7 +77,7 @@ class BookingServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def AddBookingByUserId(self, request_iterator, context):
+    def AddBookingByUserId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -101,9 +101,9 @@ def add_BookingServicer_to_server(servicer, server):
                     request_deserializer=booking__pb2.Date.FromString,
                     response_serializer=booking__pb2.Dates.SerializeToString,
             ),
-            'AddBookingByUserId': grpc.stream_unary_rpc_method_handler(
+            'AddBookingByUserId': grpc.unary_unary_rpc_method_handler(
                     servicer.AddBookingByUserId,
-                    request_deserializer=booking__pb2.Bookings.FromString,
+                    request_deserializer=booking__pb2.BookingRequest.FromString,
                     response_serializer=booking__pb2.AddBookingResponse.SerializeToString,
             ),
     }
@@ -199,7 +199,7 @@ class Booking(object):
             _registered_method=True)
 
     @staticmethod
-    def AddBookingByUserId(request_iterator,
+    def AddBookingByUserId(request,
             target,
             options=(),
             channel_credentials=None,
@@ -209,11 +209,11 @@ class Booking(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(
-            request_iterator,
+        return grpc.experimental.unary_unary(
+            request,
             target,
             '/booking.Booking/AddBookingByUserId',
-            booking__pb2.Bookings.SerializeToString,
+            booking__pb2.BookingRequest.SerializeToString,
             booking__pb2.AddBookingResponse.FromString,
             options,
             channel_credentials,

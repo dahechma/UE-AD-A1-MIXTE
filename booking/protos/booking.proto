@@ -6,7 +6,7 @@ service Booking {
     rpc GetBookings (Empty) returns (stream Bookings);
     rpc GetBookingsByUserId (UserId) returns (Bookings);
     rpc GetMoviesByDate (Date) returns (stream Dates);
-    rpc AddBookingByUserId (stream Bookings) returns (AddBookingResponse);
+    rpc AddBookingByUserId (BookingRequest) returns (AddBookingResponse);
 }
 
 message Empty {}
@@ -33,4 +33,8 @@ message Movie {
 message AddBookingResponse {
     string status = 1;
 }
-
+message BookingRequest {
+    string userid = 1;
+    string date = 2;
+    string movie_id = 3;
+  }
