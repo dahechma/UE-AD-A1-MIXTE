@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbooking.proto\x12\x07\x62ooking\"\x07\n\x05\x45mpty\"\x18\n\x06UserId\x12\x0e\n\x06userid\x18\x01 \x01(\t\"9\n\x08\x42ookings\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x1d\n\x05\x64\x61tes\x18\x02 \x03(\x0b\x32\x0e.booking.Dates\"%\n\x05\x44\x61tes\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"\x14\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"\x18\n\x05Movie\x12\x0f\n\x07movieid\x18\x01 \x01(\t\"$\n\x12\x41\x64\x64\x42ookingResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xf4\x01\n\x07\x42ooking\x12\x32\n\x0bGetBookings\x12\x0e.booking.Empty\x1a\x11.booking.Bookings0\x01\x12\x39\n\x13GetBookingsByUserId\x12\x0f.booking.UserId\x1a\x11.booking.Bookings\x12\x32\n\x0fGetMoviesByDate\x12\r.booking.Date\x1a\x0e.booking.Dates0\x01\x12\x46\n\x12\x41\x64\x64\x42ookingByUserId\x12\x11.booking.Bookings\x1a\x1b.booking.AddBookingResponse(\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbooking.proto\x12\x07\x62ooking\"\x07\n\x05\x45mpty\"\x18\n\x06UserId\x12\x0e\n\x06userid\x18\x01 \x01(\t\"9\n\x08\x42ookings\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x1d\n\x05\x64\x61tes\x18\x02 \x03(\x0b\x32\x0e.booking.Dates\"%\n\x05\x44\x61tes\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"\x14\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"\x18\n\x05Movie\x12\x0f\n\x07movieid\x18\x01 \x01(\t\"$\n\x12\x41\x64\x64\x42ookingResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"@\n\x0e\x42ookingRequest\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x10\n\x08movie_id\x18\x03 \x01(\t2\xf8\x01\n\x07\x42ooking\x12\x32\n\x0bGetBookings\x12\x0e.booking.Empty\x1a\x11.booking.Bookings0\x01\x12\x39\n\x13GetBookingsByUserId\x12\x0f.booking.UserId\x1a\x11.booking.Bookings\x12\x32\n\x0fGetMoviesByDate\x12\r.booking.Date\x1a\x0e.booking.Dates0\x01\x12J\n\x12\x41\x64\x64\x42ookingByUserId\x12\x17.booking.BookingRequest\x1a\x1b.booking.AddBookingResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -45,6 +45,8 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MOVIE']._serialized_end=205
   _globals['_ADDBOOKINGRESPONSE']._serialized_start=207
   _globals['_ADDBOOKINGRESPONSE']._serialized_end=243
-  _globals['_BOOKING']._serialized_start=246
-  _globals['_BOOKING']._serialized_end=490
+  _globals['_BOOKINGREQUEST']._serialized_start=245
+  _globals['_BOOKINGREQUEST']._serialized_end=309
+  _globals['_BOOKING']._serialized_start=312
+  _globals['_BOOKING']._serialized_end=560
 # @@protoc_insertion_point(module_scope)

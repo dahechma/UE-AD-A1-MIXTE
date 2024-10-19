@@ -31,20 +31,49 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
         thedate = showtime_pb2.Date(date=str(request.date))
         times = self.get_movie_by_date(thedate)
         yield booking_pb2.Dates(date=times.date, movies=times.movies)
-    def AddBookingByUserId(self, request, context):
-        for booking in self.db:
-            if str(booking["userid"]) == str(request.userid):
-                    booking["dates"].append(request.dates)
-                    self.write_bookings()
-                    return booking_pb2.BookingResponse(message="movie added")
-        context.set_code(grpc.StatusCode.NOT_FOUND)
-        context.set_details("User ID not found")
-        return booking_pb2.BookingResponse(message="error: user ID not found")
-
-    def write_bookings(self):
+    # Write bookings to JSON file
+    def write_bookings(self,bookings):
         with open('{}/data/bookings.json'.format("."), 'w') as f:
-            json.dump({"bookings": self.db}, f)
-   
+            json.dump({"bookings":  bookings}, f)
+
+    def AddBookingByUserId(self, request, context):
+        bookings = self.db
+        userid = request.userid
+        new_date = request.date
+        new_movie_id = request.movie_id
+
+        # Find if user already exists in bookings
+        user_found = False
+        for booking in bookings:
+            if booking["userid"] == userid:
+                user_found = True
+                date_found = False
+
+                # Check if the date exists for this user
+                for date_entry in booking["dates"]:
+                    if date_entry["date"] == new_date:
+                        date_found = True
+
+                        # Check if the movie already exists for this date
+                        if new_movie_id in date_entry["movies"]:
+                            context.set_code(grpc.StatusCode.ALREADY_EXISTS)
+                            context.set_details('Movie already booked on this date')
+
+                        # Add the movie to the existing date entry
+                        date_entry["movies"].append(new_movie_id)
+                        self.write_bookings(bookings)
+                        return booking_pb2.AddBookingResponse(status="Movie added to the date")
+
+                # If the date does not exist, add a new date entry
+                if not date_found:
+                    booking["dates"].append({"date": new_date, "movies": [new_movie_id]})
+                    self.write_bookings(bookings)
+                    return booking_pb2.AddBookingResponse(status="Date and movie added for user")
+
+        # If the user does not exist, return an error or handle it by creating a new user
+        if not user_found:
+                return booking_pb2.AddBookingResponse(status="User not found")
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     booking_pb2_grpc.add_BookingServicer_to_server(BookingServicer(), server)
