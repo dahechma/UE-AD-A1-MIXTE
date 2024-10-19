@@ -32,28 +32,59 @@ def get_movies():
     response = requests.post("http://127.0.0.1:3200/graphql", json={'query': query})
     return response.json()
 
-# Route pour récupérer toutes les réservations via gRPC
 @app.route("/bookings", methods=['GET'])
 def get_bookings():
     with grpc.insecure_channel('localhost:3001') as channel:
         stub = booking_pb2_grpc.BookingStub(channel)
-        bookings = []
-        for booking in stub.GetBookings(booking_pb2.Empty()):
-            bookings.append({
-                "userid": booking.userid,
-                "dates": booking.dates
-            })
-    return jsonify(bookings)
+        bookings_dict = {}
+        response = stub.GetBookings(booking_pb2.Empty())
 
-# Route pour récupérer les réservations par ID utilisateur via gRPC
-@app.route("/bookings/<user_id>", methods=['GET'])
-def get_bookings_by_user_id(user_id):
+        for booking in response:
+            # Conversion des dates et des films en une liste de dictionnaires
+            dates = [{"date": d.date, "movies": list(d.movies)} for d in booking.dates]
+            
+            # Stocker chaque réservation dans un dictionnaire avec l'ID utilisateur comme clé
+            bookings_dict[booking.userid] = {
+                "dates": dates
+            }
+    
+    print(bookings_dict)
+    return jsonify(bookings_dict)
+
+
+from werkzeug.exceptions import NotFound
+
+@app.route("/bookings/<userid>", methods=['GET'])
+def get_bookings_byuserid(userid):
+    print ("user id: ",userid)
     with grpc.insecure_channel('localhost:3001') as channel:
         stub = booking_pb2_grpc.BookingStub(channel)
-        response = stub.GetBookingsByUserId(booking_pb2.UserId(userid=user_id))
+        response = stub.GetBookingsByUserId(booking_pb2.UserId(userid=userid))
+        print(response)
+        # Vérification si l'utilisateur existe
         if response.userid == "Not Found":
-            return make_response(jsonify({"error": "Bookings not found for user ID: {}".format(user_id)}), 404)
-        return jsonify({"userid": response.userid, "dates": response.dates})
+            
+            raise NotFound("User ID not found")
+        
+        # Initialisation du dictionnaire des réservations
+        bookings_dict = {}
+
+        # Conversion des dates et des films en une liste de dictionnaires
+        dates = [{"date": d.date, "movies": list(d.movies)} for d in response.dates]
+        
+        # Stocker chaque réservation dans un dictionnaire avec l'ID utilisateur comme clé
+        bookings_dict[response.userid] = {
+            "dates": dates
+        }
+    print("for the user id: ",userid)
+    print(bookings_dict)
+    return jsonify(bookings_dict)
+
+
+
+
+
+
 
 # Lancer l'application Flask
 if __name__ == "__main__":
