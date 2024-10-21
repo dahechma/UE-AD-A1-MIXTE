@@ -32,6 +32,23 @@ def get_movies():
     response = requests.post("http://127.0.0.1:3200/graphql", json={'query': query})
     return response.json()
 
+@app.route("/movies/<userid>", methods=['GET'])
+def get_moviesById(userid):
+    query = '''
+    query {
+        movieById(id: "%s") {
+            id
+            title
+            director
+            rating
+        }
+    }
+    ''' % userid  # Interpolation du paramètre 'userid'
+    
+    response = requests.post("http://127.0.0.1:3200/graphql", json={'query': query})
+    return response.json()
+
+
 @app.route("/bookings", methods=['GET'])
 def get_bookings():
     with grpc.insecure_channel('localhost:3001') as channel:
