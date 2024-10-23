@@ -1,7 +1,6 @@
-# TP REST avec Flask et OpenAPI
+# TP MIXTE
 
-Ce projet est un TP qui met en place une architecture de microservices basée sur Flask et OpenAPI pour créer et interagir avec des API REST.
-
+Ce projet est un TP mixte intégrant plusieurs technologies comme Flask, GraphQL, REST et gRPC pour illustrer différents styles d'architectures backend.
 
 
 
