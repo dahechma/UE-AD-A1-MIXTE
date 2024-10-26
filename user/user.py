@@ -5,6 +5,8 @@ from werkzeug.exceptions import NotFound
 import grpc
 import booking_pb2
 import booking_pb2_grpc
+from google.protobuf.json_format import MessageToDict
+
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
@@ -32,8 +34,8 @@ def get_movies():
     response = requests.post("http://127.0.0.1:3200/graphql", json={'query': query})
     return response.json()
 
-@app.route("/movies/<userid>", methods=['GET'])
-def get_moviesById(userid):
+@app.route("/movies/<id>", methods=['GET'])
+def get_moviesById(id):
     query = '''
     query {
         movieById(id: "%s") {
@@ -43,7 +45,7 @@ def get_moviesById(userid):
             rating
         }
     }
-    ''' % userid  # Interpolation du paramètre 'userid'
+    ''' % id  # Interpolation du paramètre 'userid'
     
     response = requests.post("http://127.0.0.1:3200/graphql", json={'query': query})
     return response.json()
@@ -68,39 +70,28 @@ def get_bookings():
     print(bookings_dict)
     return jsonify(bookings_dict)
 
-
 from werkzeug.exceptions import NotFound
 
-@app.route("/bookings/<userid>", methods=['GET'])
+@app.route("/bookings/<userid>", methods=['GET']) 
 def get_bookings_byuserid(userid):
-    print ("user id: ",userid)
     with grpc.insecure_channel('localhost:3001') as channel:
         stub = booking_pb2_grpc.BookingStub(channel)
-        response = stub.GetBookingsByUserId(booking_pb2.UserId(userid=userid))
-        print(response)
-        # Vérification si l'utilisateur existe
-        if response.userid == "Not Found":
-            
-            raise NotFound("User ID not found")
+        bookings = stub.GetBookingsByUserId(booking_pb2.UserId(userid=userid))
         
-        # Initialisation du dictionnaire des réservations
-        bookings_dict = {}
-
-        # Conversion des dates et des films en une liste de dictionnaires
-        dates = [{"date": d.date, "movies": list(d.movies)} for d in response.dates]
+        # Convert the entire protobuf message, including Dates, to a JSON-serializable dictionary
+        bookings_dict = MessageToDict(bookings)
         
-        # Stocker chaque réservation dans un dictionnaire avec l'ID utilisateur comme clé
-        bookings_dict[response.userid] = {
-            "dates": dates
-        }
-    print("for the user id: ",userid)
-    print(bookings_dict)
     return jsonify(bookings_dict)
-
-
-
-
-
+@app.route("/time/<date>", methods=['GET']) 
+def get_bookings_bydate(date):
+    with grpc.insecure_channel('localhost:3001') as channel:
+        stub = booking_pb2_grpc.BookingStub(channel)
+        bookings = stub.GetMoviesByDate(booking_pb2.UserId(userid=date))
+        
+        # Convert the entire protobuf message, including Dates, to a JSON-serializable dictionary
+        bookings_dict = MessageToDict(bookings)
+        
+    return jsonify(bookings_dict)
 
 
 # Lancer l'application Flask
